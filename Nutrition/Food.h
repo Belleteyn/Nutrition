@@ -26,7 +26,8 @@ public:
   const Nutrition& getPortionNutrition() const;
 
 private:
-  const char* name = "";
+  const char* name_ = "";
+  const int64_t id_;
 
   /* per 100g */
   const Nutrition nutrition_;
