@@ -3,6 +3,7 @@
 #include <map>
 
 #include <Food.h>
+#include <NutritionError.h>
 
 struct FoodAvailable
 {
@@ -36,13 +37,13 @@ int main()
   Nutrition sum(0, 0, 0, 0);
 
   const float allowedError = 0.1;
-  float error = 1, prevError = 0;
+  NutritionError error(idealNutrition, sum), prevError;
 
   std::map<Food, uint16_t> foodMap;
 
-  while (error > allowedError && error != prevError)
+  while (error.error() > allowedError && error != prevError)
   {
-    if (error != 1)
+    if (error.error() != 1)
     {
 
     }
@@ -73,17 +74,12 @@ int main()
     }
 
     prevError = error;
-    auto kkalError = 1 - kSum / kMax;
-    auto pError = 1 - pSumKkal / pMax;
-    auto cError = 1 - cSumKkal / cMax;
-    auto fError = 1 - cSumKkal / fMax;
+    error = NutritionError(idealNutrition, sum);
 
-    std::cout << "kkal error = " << kkalError
-              << "\np error = " << pError
-              << "\nc error = " << cError
-              << "\nf error = " << fError << std::endl;
-
-    error = std::max(kkalError, std::max(pError, std::max(cError, fError)));
+    std::cout << "kkal error = " << error.kkalErr
+              << "\np error = " << error.proteinsErr
+              << "\nc error = " << error.carbohydratesErr
+              << "\nf error = " << error.fatsErr << std::endl;
   }
 
   for (auto iter = foodMap.begin(); iter != foodMap.end(); ++iter)
@@ -97,7 +93,7 @@ int main()
   std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")";
   std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")" << std::endl;
 
-  std::cout << "\nError: " << error * 100 << std::endl;
+  std::cout << "\nError: " << error.error() * 100 << std::endl;
 
   return 0;
 }
