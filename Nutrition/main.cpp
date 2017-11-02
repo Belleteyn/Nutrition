@@ -32,13 +32,12 @@ static std::multimap<int16_t, FoodAvailable> giMap = {
 
 int main()
 {
-  const float kMax = 1300;
-  const float cMax = kMax * 0.5, pMax = kMax * 0.3, fMax = kMax * 0.2;
+  const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
+  Nutrition sum(0, 0, 0, 0);
 
   const float allowedError = 0.1;
   float error = 1, prevError = 0;
 
-  float pSumKkal = 0, cSumKkal = 0, fSumKkal = 0, kSum = 0;
   std::map<Food, uint16_t> foodMap;
 
   while (error > allowedError && error != prevError)
@@ -53,39 +52,23 @@ int main()
       Food checkPortion(iter->second.food);
       checkPortion.setPortion(iter->second.deltaPortion);
 
-      bool pcf = checkPortion.getPortionProteins() + pSumKkal <= pMax
-                && checkPortion.getPortionCarbohydrates() + cSumKkal <= cMax
-                && checkPortion.getPortionFats() + fSumKkal <= fMax
-                && checkPortion.getPortionKkal() + kSum <= kMax;
-
       auto foodIter = foodMap.find(iter->second.food);
-      if (foodIter == foodMap.end() && pcf)
+      if (foodIter == foodMap.end() && (checkPortion.getPortionNutrition() + sum <= idealNutrition))
       {
         foodMap.insert(std::pair<Food, uint16_t>(iter->second.food, checkPortion.getPortionMass()));
         foodIter = foodMap.find(iter->second.food);
 
-        kSum += checkPortion.getPortionKkal();
-        pSumKkal += checkPortion.getPortionProteins();
-        cSumKkal += checkPortion.getPortionCarbohydrates();
-        fSumKkal += checkPortion.getPortionFats();
+        sum += checkPortion.getPortionNutrition();
       }
 
       //if portion is allowed
-      while (checkPortion.getPortionProteins() + pSumKkal <= pMax
-             && checkPortion.getPortionCarbohydrates() + cSumKkal <= cMax
-             && checkPortion.getPortionFats() + fSumKkal <= fMax
-             && checkPortion.getPortionKkal() + kSum <= kMax
-
+      while (checkPortion.getPortionNutrition() + sum <= idealNutrition
              && foodIter->second <= iter->second.maxWeightAvailable
              && foodIter->second <= iter->second.portionPreferred)
       {
         //add portion
         foodIter->second += checkPortion.getPortionMass();
-
-        kSum += checkPortion.getPortionKkal();
-        pSumKkal += checkPortion.getPortionProteins();
-        cSumKkal += checkPortion.getPortionCarbohydrates();
-        fSumKkal += checkPortion.getPortionFats();
+        sum += checkPortion.getPortionNutrition();
       }
     }
 
@@ -109,10 +92,10 @@ int main()
     std::cout << food.getName() << " : " << iter->second << std::endl;
   }
 
-  std::cout << "Summary: \n" << "kkal: " << kSum << "(" << kMax << ")";
-  std::cout << "\np: " << pSumKkal << "(" << pMax << ")";
-  std::cout << "\nc: " << cSumKkal << "(" << cMax << ")";
-  std::cout << "\nf: " << fSumKkal << "(" << fMax << ")" << std::endl;
+  std::cout << "Summary: \n" << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")";
+  std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")";
+  std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")";
+  std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")" << std::endl;
 
   std::cout << "\nError: " << error * 100 << std::endl;
 

@@ -2,17 +2,14 @@
 
 #include <iostream>
 #include <assert.h>
+#include <string>
 
 Food::Food(const char* name, float p, float c, float f, uint16_t k)
-  : name(name)
-  , proteins(p)
-  , carbohydrates(c)
-  , fats(f)
-  , kkal(k)
+  : name_(name)
+  , id_(std::hash<std::string>()(std::string(name)))
+  , nutrition_(k, p, c, f)
   , portionMass(0)
-  , portionProteins(0)
-  , portionCarbohydrates(0)
-  , portionFats(0)
+  , portionNutrition_(0, 0, 0, 0)
 {
 
 }
@@ -21,10 +18,10 @@ void Food::setPortion(const int gram)
 {
   portionMass = gram;
 
-  portionKkal = kkal * 0.01 * portionMass;
-  portionProteins = proteins * 0.01 * kkalPerProteinGram * portionMass;
-  portionCarbohydrates = carbohydrates * 0.01 * kkalPerCarbohydrateGram * portionMass;
-  portionFats = fats * 0.01 * kkalPerFatGram * portionMass;
+  portionNutrition_.kkal = nutrition_.kkal * 0.01 * portionMass;
+  portionNutrition_.proteins = nutrition_.proteins * 0.01 * kkalPerProteinGram * portionMass;
+  portionNutrition_.carbohydrates = nutrition_.carbohydrates * 0.01 * kkalPerCarbohydrateGram * portionMass;
+  portionNutrition_.fats = nutrition_.fats * 0.01 * kkalPerFatGram * portionMass;
 
   /*
   std::cout << "portion " << portionMass
@@ -34,40 +31,31 @@ void Food::setPortion(const int gram)
             << ", f " << portionFats
             << std::endl;
   */
-  assert(portionKkal != (portionProteins + portionCarbohydrates + portionFats) && "portion kkal error");
+  assert(portionNutrition_.kkal != (portionNutrition_.proteins + portionNutrition_.carbohydrates + portionNutrition_.fats)
+      && "portion kkal error");
 }
 
-bool Food::operator <(const Food& rhs) const
+bool Food::operator < (const Food& rhs) const
 {
-  return name < rhs.name;
+  return id_ < rhs.id_;
 }
 
 const char* Food::getName() const
 {
-  return name;
-}
-
-float Food::getPortionKkal() const
-{
-  return portionKkal;
-}
-
-float Food::getPortionProteins() const
-{
-  return portionProteins;
-}
-
-float Food::getPortionCarbohydrates() const
-{
-  return portionCarbohydrates;
-}
-
-float Food::getPortionFats() const
-{
-  return portionFats;
+  return name_;
 }
 
 uint16_t Food::getPortionMass() const
 {
   return portionMass;
+}
+
+const Nutrition& Food::getNutrition() const
+{
+  return nutrition_;
+}
+
+const Nutrition& Food::getPortionNutrition() const
+{
+  return portionNutrition_;
 }
