@@ -10,4 +10,5 @@ SOURCES += main.cpp \
 
 HEADERS += \
     Nutrition.h \
-    Food.h
+    Food.h \
+    NutritionError.h
