@@ -38,6 +38,15 @@ struct Nutrition
     fats += rhs.fats;
     return *this;
   }
+
+  Nutrition& operator -= (const Nutrition& rhs)
+  {
+    kkal -= rhs.kkal;
+    proteins -= rhs.proteins;
+    carbohydrates -= rhs.carbohydrates;
+    fats -= rhs.fats;
+    return *this;
+  }
 };
 
 #endif // NUTRITION_H
