@@ -59,3 +59,22 @@ const Nutrition& Food::getPortionNutrition() const
 {
   return portionNutrition_;
 }
+
+float Food::getNutrient(const Nutrient& nutrient) const
+{
+  switch (nutrient) {
+  case Nutrient::Proteins:
+    return nutrition_.proteins;
+
+  case Nutrient::Carbohydrates:
+    return nutrition_.carbohydrates;
+
+  case Nutrient::Fats:
+    return nutrition_.fats;
+
+  default:
+  break;
+  }
+
+  return 0;
+}

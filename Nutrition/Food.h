@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <Nutrition.h>
+#include <Nutrient.h>
 
 const float kkalPerFatGram = 9.29;
 const float kkalPerProteinGram = 4.11;
@@ -24,6 +25,8 @@ public:
 
   const Nutrition& getNutrition() const;
   const Nutrition& getPortionNutrition() const;
+
+  float getNutrient(const Nutrient& nutrient) const;
 
 private:
   const char* name_ = "";
