@@ -36,7 +36,7 @@ private:
   const Nutrition nutrition_;
 
   /* portion */
-  uint16_t portionMass = 0;
+  uint16_t portionMass_ = 0;
   Nutrition portionNutrition_;
 };
 

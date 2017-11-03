@@ -8,7 +8,7 @@ Food::Food(const char* name, float p, float c, float f, uint16_t k)
   : name_(name)
   , id_(std::hash<std::string>()(std::string(name)))
   , nutrition_(k, p, c, f)
-  , portionMass(0)
+  , portionMass_(0)
   , portionNutrition_(0, 0, 0, 0)
 {
 
@@ -16,12 +16,12 @@ Food::Food(const char* name, float p, float c, float f, uint16_t k)
 
 void Food::setPortion(const int gram)
 {
-  portionMass = gram;
+  portionMass_ = gram;
 
-  portionNutrition_.kkal = nutrition_.kkal * 0.01 * portionMass;
-  portionNutrition_.proteins = nutrition_.proteins * 0.01 * kkalPerProteinGram * portionMass;
-  portionNutrition_.carbohydrates = nutrition_.carbohydrates * 0.01 * kkalPerCarbohydrateGram * portionMass;
-  portionNutrition_.fats = nutrition_.fats * 0.01 * kkalPerFatGram * portionMass;
+  portionNutrition_.kkal = nutrition_.kkal * 0.01 * portionMass_;
+  portionNutrition_.proteins = nutrition_.proteins * 0.01 * kkalPerProteinGram * portionMass_;
+  portionNutrition_.carbohydrates = nutrition_.carbohydrates * 0.01 * kkalPerCarbohydrateGram * portionMass_;
+  portionNutrition_.fats = nutrition_.fats * 0.01 * kkalPerFatGram * portionMass_;
 
   /*
   std::cout << "portion " << portionMass
@@ -47,7 +47,7 @@ const char* Food::getName() const
 
 uint16_t Food::getPortionMass() const
 {
-  return portionMass;
+  return portionMass_;
 }
 
 const Nutrition& Food::getNutrition() const
