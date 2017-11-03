@@ -2,6 +2,7 @@
 #define NUTRITIONERROR_H
 
 #include <Nutrition.h>
+#include <Nutrient.h>
 
 struct NutritionError
 {
@@ -23,6 +24,20 @@ struct NutritionError
   float error() const
   {
     return std::max(kkalErr, std::max(proteinsErr, std::max(carbohydratesErr, fatsErr)));
+  }
+
+  Nutrient maxErrorNutrient() const
+  {
+    auto max = std::max(proteinsErr, std::max(carbohydratesErr, fatsErr));
+    Nutrient meNutrient = (fatsErr == max) ? Nutrient::Fats : ((carbohydratesErr == max) ? Nutrient::Carbohydrates : Nutrient::Proteins);
+    return meNutrient;
+  }
+
+  Nutrient minErrorNutrient() const
+  {
+    auto min = std::min(proteinsErr, std::min(carbohydratesErr, fatsErr));
+    Nutrient meNutrient = (proteinsErr == min) ? Nutrient::Proteins : ((carbohydratesErr == min) ? Nutrient::Carbohydrates : Nutrient::Fats);
+    return meNutrient;
   }
 
   bool operator == (const NutritionError& rhs) const
