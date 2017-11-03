@@ -13,6 +13,7 @@ class Food
 {
 public:
   Food(const char* name, float p = 0, float c = 0, float f = 0, uint16_t k = 0);
+  Food(const Food& other);
   ~Food() = default;
 
   void setPortion(const int gram);

@@ -14,6 +14,22 @@ Food::Food(const char* name, float p, float c, float f, uint16_t k)
 
 }
 
+Food::Food(const Food& other)
+  : name_(other.name_)
+  , id_(std::hash<std::string>()(std::string(name_)))
+  , nutrition_(other.nutrition_.kkal
+               , other.nutrition_.proteins
+               , other.nutrition_.carbohydrates
+               , other.nutrition_.fats)
+  , portionMass_(other.portionMass_)
+  , portionNutrition_(other.portionNutrition_.kkal
+                      , other.portionNutrition_.proteins
+                      , other.portionNutrition_.carbohydrates
+                      , other.portionNutrition_.fats)
+{
+
+}
+
 void Food::setPortion(const int gram)
 {
   portionMass_ = gram;
