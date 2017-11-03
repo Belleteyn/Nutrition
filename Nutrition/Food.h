@@ -18,6 +18,7 @@ public:
   void setPortion(const int gram);
 
   bool operator < (const Food& rhs) const;
+  bool operator == (const Food& rhs) const;
 
 
   const char* getName() const;
