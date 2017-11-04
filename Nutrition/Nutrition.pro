@@ -12,4 +12,5 @@ HEADERS += \
     Nutrition.h \
     Food.h \
     NutritionError.h \
-    Nutrient.h
+    Nutrient.h \
+    FoodContainer.h

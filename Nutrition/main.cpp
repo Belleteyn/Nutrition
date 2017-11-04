@@ -1,8 +1,6 @@
 #include <iostream>
 
-#include <map>
-
-#include <Food.h>
+#include <FoodContainer.h>
 #include <NutritionError.h>
 
 struct FoodAvailable
@@ -41,7 +39,7 @@ int main()
   const float allowedError = 0.1;
   NutritionError error(idealNutrition, sum), prevError;
 
-  std::map<Food, uint16_t> foodMap;
+  FoodContainer foodMap;
 
   while (error.error() > allowedError && error != prevError)
   {
