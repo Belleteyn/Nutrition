@@ -48,13 +48,52 @@ int main()
   {
     cycleSteps++;
 
+    const Food* ignorable = nullptr;
     if (error.error() != 1)
     {
+      auto maxErrorNutrient = error.maxErrorNutrient();
+      auto minErrorNutrient = error.minErrorNutrient();
 
+      std::cout << " max err = " << maxErrorNutrient << ", min err = " << minErrorNutrient << std::endl;
+
+      for (auto addedFoodIter = foodMap.begin(); addedFoodIter != foodMap.end(); ++addedFoodIter)
+      {
+        if (!ignorable)
+        {
+          ignorable = &addedFoodIter->first;
+        }
+        else
+        {
+          if (ignorable->getNutrient(maxErrorNutrient) > addedFoodIter->first.getNutrient(maxErrorNutrient))
+          {
+            ignorable = &addedFoodIter->first;
+          }
+        }
+      }
+
+      std::cout << "remove portion of " << ignorable->getName() << "\n";
     }
 
     for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
     {
+      if (ignorable && iter->second.food == *ignorable)
+      {
+        Food removablePortion(*ignorable);
+
+        removablePortion.setPortion(iter->second.deltaPortion);
+        sum -= removablePortion.getPortionNutrition();
+
+        auto foodIter = foodMap.find(iter->second.food);
+        foodIter->second -= removablePortion.getPortionMass();
+
+        if (foodIter->second == 0)
+        {
+          foodMap.erase(foodIter);
+        }
+
+        continue;
+      }
+
       Food checkPortion(iter->second.food);
       checkPortion.setPortion(iter->second.deltaPortion);
 
