@@ -28,7 +28,9 @@ static std::multimap<int16_t, FoodAvailable> giMap = {
   GIPair(60, FoodAvailable(Food("banana", 1.5, 21.8, 0.2, 95), 120 * 5, 120, 120)),
   GIPair(90, FoodAvailable(Food("honey", 0.8, 81.5, 0, 329), 350, 15, 5)),
   GIPair(0, FoodAvailable(Food("tvorog", 16.5, 1.3, 0, 71), 400, 200, 100)),
-  GIPair(0, FoodAvailable(Food("chicken", 23.6, 0.4, 1.9, 113), 820, 200, 10))
+  GIPair(0, FoodAvailable(Food("chicken", 23.6, 0.4, 1.9, 113), 820, 200, 10)),
+  GIPair(100, FoodAvailable(Food("sweets", 2.5, 63.8, 14.2, 375), 200, 30, 10)),
+  GIPair(15, FoodAvailable(Food("kashew paste", 10, 9, 51, 590), 320, 50, 5))
 };
 
 int main()
