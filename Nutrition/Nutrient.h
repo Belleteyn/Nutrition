@@ -4,7 +4,7 @@
 #include <iostream>
 
 enum class Nutrient { Proteins, Carbohydrates, Fats };
-std::ostream& operator << (std::ostream& os, const Nutrient& obj)
+static std::ostream& operator << (std::ostream& os, const Nutrient& obj)
 {
   switch (obj)
   {

@@ -56,11 +56,13 @@ bool Food::operator < (const Food& rhs) const
   return id_ < rhs.id_;
 }
 
-const char* Food::getName() const
 bool Food::operator ==(const Food& rhs) const
 {
   return id_ == rhs.id_;
 }
+
+const char* Food::getName() const
+{
   return name_;
 }
 
