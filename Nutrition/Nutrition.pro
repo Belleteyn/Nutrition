@@ -6,11 +6,13 @@ CONFIG -= qt
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 
 SOURCES += main.cpp \
-    Food.cpp
+    Food.cpp \
+    Genetic.cpp
 
 HEADERS += \
     Nutrition.h \
     Food.h \
     NutritionError.h \
     Nutrient.h \
+    Genetic.h \
     FoodContainer.h
