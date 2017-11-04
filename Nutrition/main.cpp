@@ -43,57 +43,10 @@ int main()
 
   std::map<Food, uint16_t> foodMap;
 
-  int cycleSteps = 0;
-  while (error.error() > allowedError && error != prevError && cycleSteps < 10)
+  while (error.error() > allowedError && error != prevError)
   {
-    cycleSteps++;
-
-    const Food* ignorable = nullptr;
-    if (error.error() != 1)
-    {
-      auto maxErrorNutrient = error.maxErrorNutrient();
-      auto minErrorNutrient = error.minErrorNutrient();
-
-      std::cout << " max err = " << maxErrorNutrient << ", min err = " << minErrorNutrient << std::endl;
-
-      for (auto addedFoodIter = foodMap.begin(); addedFoodIter != foodMap.end(); ++addedFoodIter)
-      {
-        if (!ignorable)
-        {
-          ignorable = &addedFoodIter->first;
-        }
-        else
-        {
-          if (ignorable->getNutrient(maxErrorNutrient) > addedFoodIter->first.getNutrient(maxErrorNutrient))
-          {
-            ignorable = &addedFoodIter->first;
-          }
-        }
-      }
-
-      std::cout << "remove portion of " << ignorable->getName() << "\n";
-    }
-
     for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
     {
-      if (ignorable && iter->second.food == *ignorable)
-      {
-        Food removablePortion(*ignorable);
-
-        removablePortion.setPortion(iter->second.deltaPortion);
-        sum -= removablePortion.getPortionNutrition();
-
-        auto foodIter = foodMap.find(iter->second.food);
-        foodIter->second -= removablePortion.getPortionMass();
-
-        if (foodIter->second == 0)
-        {
-          foodMap.erase(foodIter);
-        }
-
-        continue;
-      }
-
       Food checkPortion(iter->second.food);
       checkPortion.setPortion(iter->second.deltaPortion);
 
@@ -104,8 +57,6 @@ int main()
         foodIter = foodMap.find(iter->second.food);
 
         sum += checkPortion.getPortionNutrition();
-
-        std::cout << "add portion of " << checkPortion.getName() << "\n";
       }
 
       //if portion is allowed
@@ -116,32 +67,11 @@ int main()
         //add portion
         foodIter->second += checkPortion.getPortionMass();
         sum += checkPortion.getPortionNutrition();
-
-        std::cout << "add portion of " << checkPortion.getName() << "\n";
       }
     }
 
     prevError = error;
     error = NutritionError(idealNutrition, sum);
-
-
-    for (auto iter = foodMap.begin(); iter != foodMap.end(); ++iter)
-    {
-      const Food& food = iter->first;
-      std::cout << food.getName() << " : " << iter->second << std::endl;
-    }
-
-    std::cout << "\nSummary: \n" << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")";
-    std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")";
-    std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")";
-    std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")" << std::endl;
-
-    std::cout << "\nError: " << error.error() * 100 << std::endl;
-
-    std::cout << "kkal error = " << error.kkalErr
-              << "\np error = " << error.proteinsErr
-              << "\nc error = " << error.carbohydratesErr
-              << "\nf error = " << error.fatsErr << std::endl << std::endl;
   }
 
   for (auto iter = foodMap.begin(); iter != foodMap.end(); ++iter)
@@ -156,6 +86,11 @@ int main()
   std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")" << std::endl;
 
   std::cout << "\nError: " << error.error() * 100 << std::endl;
+
+  std::cout << "kkal error = " << error.kkalErr
+            << "\np error = " << error.proteinsErr
+            << "\nc error = " << error.carbohydratesErr
+            << "\nf error = " << error.fatsErr << std::endl << std::endl;
 
   return 0;
 }
