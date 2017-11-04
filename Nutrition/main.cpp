@@ -43,8 +43,11 @@ int main()
 
   std::map<Food, uint16_t> foodMap;
 
-  while (error.error() > allowedError && error != prevError)
+  int cycleSteps = 0;
+  while (error.error() > allowedError && error != prevError && cycleSteps < 10)
   {
+    cycleSteps++;
+
     if (error.error() != 1)
     {
 
