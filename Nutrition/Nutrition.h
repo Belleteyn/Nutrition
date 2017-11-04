@@ -17,6 +17,20 @@ struct Nutrition
     , fats(f)
   {}
 
+  Nutrition& operator = (const Nutrition& other)
+  {
+    if (this == &other) {
+      return *this;
+    }
+
+    kkal = other.kkal;
+    proteins = other.proteins;
+    carbohydrates = other.carbohydrates;
+    fats = other.fats;
+
+    return *this;
+  }
+
   Nutrition operator + (const Nutrition& rhs) const
   {
     return Nutrition(kkal + rhs.kkal, proteins + rhs.proteins, carbohydrates + rhs.carbohydrates, fats + rhs.fats);
