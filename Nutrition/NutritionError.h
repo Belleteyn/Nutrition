@@ -1,6 +1,8 @@
 #ifndef NUTRITIONERROR_H
 #define NUTRITIONERROR_H
 
+#include <assert.h>
+
 #include <Nutrition.h>
 #include <Nutrient.h>
 
@@ -19,6 +21,17 @@ struct NutritionError
     proteinsErr = 1 - actual.proteins / ideal.proteins;
     carbohydratesErr = 1 - actual.carbohydrates / ideal.carbohydrates;
     fatsErr = 1 - actual.fats / ideal.fats;
+
+    assert(kkalErr >= 0 && "kkal error < 0");
+    assert(proteinsErr >= 0 && "proteins error < 0");
+    assert(carbohydratesErr >= 0 && "carbohydrates error < 0");
+    assert(fatsErr >= 0 && "fats error < 0");
+
+
+    assert(kkalErr <= 1 && "kkal error > 1");
+    assert(proteinsErr <= 1 && "proteins error > 1");
+    assert(carbohydratesErr <= 1 && "carbohydrates error > 1");
+    assert(fatsErr <= 1 && "fats error > 1");
   }
 
   float error() const
