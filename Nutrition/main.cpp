@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <list>
+#include <math.h>
+
 #include <FoodContainer.h>
 #include <NutritionError.h>
 
@@ -39,11 +42,30 @@ int main()
   const float allowedError = 0.1;
   NutritionError error(idealNutrition, sum), prevError;
 
+  std::multimap<float, std::list<Food>> errorMap;
+  uint64_t N = 1, n = 1;
 
+  std::list<std::pair<const Food&, uint16_t>> portions;
 
+  //TODO: if empty, N = 0
+  for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
+  {
+    auto foodAvailable = iter->second;
+    std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName();
+    auto portions = ceil(static_cast<float>(foodAvailable.maxWeightAvailable) / foodAvailable.deltaPortion);
+    std::cout << " / max portions " << portions;
 
+    auto preferredPortions = ceil(static_cast<float>(foodAvailable.portionPreferred) / foodAvailable.deltaPortion);
+    std::cout << " / preferredPortions " << preferredPortions << std::endl;
+
+    N *= portions;
+    n *= preferredPortions;
+
+    portions.push_back(foodAvailable.food, 0);
   }
 
+  std::cout << "N = " << N << std::endl;
+  std::cout << "n = " << n << std::endl;
 
   std::cout << "\nSummary: \n" << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")";
   std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")";
