@@ -39,44 +39,11 @@ int main()
   const float allowedError = 0.1;
   NutritionError error(idealNutrition, sum), prevError;
 
-  FoodContainer foodMap;
 
-  while (error.error() > allowedError && error != prevError)
-  {
-    for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
-    {
-      Food checkPortion(iter->second.food);
-      checkPortion.setPortion(iter->second.deltaPortion);
 
-      auto foodIter = foodMap.find(iter->second.food);
-      if (foodIter == foodMap.end() && (checkPortion.getPortionNutrition() + sum <= idealNutrition))
-      {
-        foodMap.insert(std::pair<Food, uint16_t>(iter->second.food, checkPortion.getPortionMass()));
-        foodIter = foodMap.find(iter->second.food);
 
-        sum += checkPortion.getPortionNutrition();
-      }
-
-      //if portion is allowed
-      while (checkPortion.getPortionNutrition() + sum <= idealNutrition
-             && foodIter->second <= iter->second.maxWeightAvailable
-             && foodIter->second <= iter->second.portionPreferred)
-      {
-        //add portion
-        foodIter->second += checkPortion.getPortionMass();
-        sum += checkPortion.getPortionNutrition();
-      }
-    }
-
-    prevError = error;
-    error = NutritionError(idealNutrition, sum);
   }
 
-  for (auto iter = foodMap.begin(); iter != foodMap.end(); ++iter)
-  {
-    const Food& food = iter->first;
-    std::cout << food.getName() << " : " << iter->second << std::endl;
-  }
 
   std::cout << "\nSummary: \n" << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")";
   std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")";
