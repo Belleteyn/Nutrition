@@ -35,7 +35,7 @@ struct NutritionError
 
   float error() const
   {
-    return std::max(kkalErr, std::max(proteinsErr, std::max(carbohydratesErr, fatsErr)));
+    return std::max(abs(kkalErr), std::max(abs(proteinsErr), std::max(abs(carbohydratesErr), abs(fatsErr))));
   }
 
   Nutrient maxErrorNutrient() const
