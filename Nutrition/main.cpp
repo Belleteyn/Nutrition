@@ -66,12 +66,10 @@ int main()
   Nutrition sum(0, 0, 0, 0);
 
   const float allowedError = 0.1;
-  NutritionError error(idealNutrition, sum), prevError;
+  NutritionError error(idealNutrition, sum);
 
-  std::multimap<float, std::list<Food>> errorMap;
   uint64_t N = 1, n = 1;
 
-  std::list<std::pair<const Food&, uint16_t>> portions;
   FoodTree tree;
 
   //TODO: if empty, N = 0
@@ -88,7 +86,6 @@ int main()
     N *= portions;
     n *= preferredPortions;
 
-    portions.push_back(foodAvailable.food, 0);
     tree.addLeaves(createSubTree(foodAvailable));
     tree.print();
   }
