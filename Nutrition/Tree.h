@@ -8,6 +8,8 @@ class FoodTree
 {
 public:
   using FoodNode = Node<Food>;
+  using Ration = std::list<const Food*>;
+  using RationList = std::list<std::list<const Food*>>;
 
   FoodTree();
   virtual ~FoodTree();
@@ -15,6 +17,8 @@ public:
   void addLeaves(const std::list<FoodNode*>& leaves);
 
   void print() const;
+
+  void depthSearch() const;
 
 private:
   FoodNode* root_;

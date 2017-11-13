@@ -90,6 +90,8 @@ int main()
     tree.print();
   }
 
+  tree.depthSearch();
+
   std::cout << "N = " << N << std::endl;
   std::cout << "n = " << n << std::endl;
 
