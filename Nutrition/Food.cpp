@@ -46,9 +46,10 @@ void Food::setPortion(const int gram)
             << ", c " << portionCarbohydrates
             << ", f " << portionFats
             << std::endl;
-  */
+
   assert(portionNutrition_.kkal != (portionNutrition_.proteins + portionNutrition_.carbohydrates + portionNutrition_.fats)
       && "portion kkal error");
+  */
 }
 
 bool Food::operator < (const Food& rhs) const
