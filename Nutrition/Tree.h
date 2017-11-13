@@ -18,7 +18,7 @@ public:
 
   void print() const;
 
-  void depthSearch() const;
+  RationList depthSearch(); //TODO: const Nutrition& ideal, const float availableError
 
 private:
   FoodNode* root_;

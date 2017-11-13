@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-void depthSearch(const FoodTree::FoodNode* node, FoodTree::Ration& ration, FoodTree::RationList& rationList)
+void depthSearch(const FoodTree::FoodNode* node
+                 , FoodTree::Ration& ration, FoodTree::RationList& rationList)
 {
   if (node->getBody().getPortionMass() > 0)
   {
@@ -63,18 +64,11 @@ void FoodTree::print() const
   }
 }
 
-void FoodTree::depthSearch() const
+FoodTree::RationList FoodTree::depthSearch()
 {
   FoodTree::Ration list;
   FoodTree::RationList rationList;
   ::depthSearch(root_, list, rationList);
 
-  for (auto rlist = rationList.begin(); rlist != rationList.end(); ++rlist)
-  {
-    std::cout << "\nration: " << rlist->size() << std::endl;
-    for (auto iter = rlist->begin(); iter != rlist->end(); ++iter)
-    {
-      std::cout << (*iter)->getName() << " -> " << (*iter)->getPortionMass() << std::endl;
-    }
-  }
+  return rationList;
 }
