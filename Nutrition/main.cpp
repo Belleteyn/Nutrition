@@ -63,10 +63,8 @@ static std::multimap<int16_t, FoodAvailable> giMap = {
 int main()
 {
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
-  Nutrition sum(0, 0, 0, 0);
 
-  const float allowedError = 0.1;
-  NutritionError error(idealNutrition, sum);
+  const float allowedError = 0.685;
 
   uint64_t N = 1, n = 1;
 
@@ -87,25 +85,78 @@ int main()
     n *= preferredPortions;
 
     tree.addLeaves(createSubTree(foodAvailable));
-    tree.print();
   }
-
-  tree.depthSearch();
 
   std::cout << "N = " << N << std::endl;
   std::cout << "n = " << n << std::endl;
 
-  std::cout << "\nSummary: \n" << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")";
-  std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")";
-  std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")";
-  std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")" << std::endl;
+  FoodTree::Ration* minErrorRation = nullptr;
+  Nutrition minErrorNutrition(0, 0, 0, 0);
+  NutritionError minError(idealNutrition, minErrorNutrition);
 
-  std::cout << "\nError: " << error.error() * 100 << std::endl;
+  auto rationList = tree.depthSearch(idealNutrition, 0.7);
+  for (auto ration = rationList.begin(); ration != rationList.end(); ++ration)
+  {
+    Nutrition sum(0, 0, 0, 0);
+    for (auto iter = ration->begin(); iter != ration->end(); ++iter)
+    {
+      sum += (*iter)->getPortionNutrition();
+    }
 
-  std::cout << "kkal error = " << error.kkalErr
-            << "\np error = " << error.proteinsErr
-            << "\nc error = " << error.carbohydratesErr
-            << "\nf error = " << error.fatsErr << std::endl << std::endl;
+    NutritionError error(idealNutrition, sum);
+    if (error.error() < minError.error())
+    {
+      minError = error;
+      minErrorNutrition = sum;
+      minErrorRation = &(*ration);
+    }
+
+//    if (error.error() <= allowedError)
+//    {
+//      std::cout << "ration: " << ration->size() << std::endl;
+//      for (auto iter = ration->begin(); iter != ration->end(); ++iter)
+//      {
+//        std::cout << (*iter)->getName() << " -> " << (*iter)->getPortionMass() << std::endl;
+//      }
+
+//      std::cout << "\nSummary: Error = " << error.error() * 100 << std::endl;
+
+//      std::cout << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")"
+//                << ", kkal error = " << error.kkalErr;
+
+//      std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")"
+//                << ", error = " << error.proteinsErr;
+
+//      std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")"
+//                << ", error = " << error.carbohydratesErr;
+
+//      std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")"
+//                << ", error = " << error.fatsErr << std::endl << std::endl;
+//    }
+  }
+
+  if (!minErrorRation)
+    return 0;
+
+  std::cout << "min error ration: " << minErrorRation->size() << std::endl;
+  for (auto iter = minErrorRation->begin(); iter != minErrorRation->end(); ++iter)
+  {
+    std::cout << (*iter)->getName() << " -> " << (*iter)->getPortionMass() << std::endl;
+  }
+
+  std::cout << "\nSummary: Error = " << minError.error() * 100 << std::endl;
+
+  std::cout << "kkal: " << minErrorNutrition.kkal << "(" << idealNutrition.kkal << ")"
+            << ", kkal error = " << minError.kkalErr;
+
+  std::cout << "\np: " << minErrorNutrition.proteins << "(" << idealNutrition.proteins << ")"
+            << ", error = " << minError.proteinsErr;
+
+  std::cout << "\nc: " << minErrorNutrition.carbohydrates << "(" << idealNutrition.carbohydrates << ")"
+            << ", error = " << minError.carbohydratesErr;
+
+  std::cout << "\nf: " << minErrorNutrition.fats << "(" << idealNutrition.fats << ")"
+            << ", error = " << minError.fatsErr << std::endl;
 
   return 0;
 }
