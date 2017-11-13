@@ -31,6 +31,7 @@ public:
   void setSub(const std::list<Node*>& sub) { sub_ = sub; }
 
   const T& getBody() const { return body_; }
+  const std::list<Node*>& getSub() const { return sub_; }
 
 private:
   T body_;
