@@ -22,15 +22,15 @@ struct NutritionError
     carbohydratesErr = 1 - actual.carbohydrates / ideal.carbohydrates;
     fatsErr = 1 - actual.fats / ideal.fats;
 
-    assert(kkalErr >= -1);
-    assert(proteinsErr >= -1);
-    assert(carbohydratesErr >= -1);
-    assert(fatsErr >= -1);
+//    assert(kkalErr >= -1);
+//    assert(proteinsErr >= -1);
+//    assert(carbohydratesErr >= -1);
+//    assert(fatsErr >= -1);
 
-    assert(kkalErr <= 1);
-    assert(proteinsErr <= 1);
-    assert(carbohydratesErr <= 1);
-    assert(fatsErr <= 1);
+//    assert(kkalErr <= 1);
+//    assert(proteinsErr <= 1);
+//    assert(carbohydratesErr <= 1);
+//    assert(fatsErr <= 1);
   }
 
   float error() const
