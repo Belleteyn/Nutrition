@@ -6,6 +6,8 @@
 #include <FoodContainer.h>
 #include <NutritionError.h>
 
+#include <Tree.h>
+
 struct FoodAvailable
 {
   Food food = Food("");
@@ -20,6 +22,30 @@ struct FoodAvailable
     , deltaPortion(delta)
   {}
 };
+
+using SubTree = std::list<FoodTree::FoodNode*>;
+SubTree createSubTree(const FoodAvailable& avFood)
+{
+  SubTree subTree;
+  uint16_t portion = 0;
+
+  Food food(avFood.food);
+
+  while (portion <= avFood.portionPreferred) {
+    if (portion > avFood.portionPreferred) {
+      portion = avFood.portionPreferred;
+    }
+
+    food.setPortion(portion);
+
+    FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
+    subTree.push_back(node);
+
+    portion += avFood.deltaPortion;
+  }
+
+  return subTree;
+}
 
 using GIPair = std::pair<int16_t, FoodAvailable>;
 static std::multimap<int16_t, FoodAvailable> giMap = {
@@ -46,6 +72,7 @@ int main()
   uint64_t N = 1, n = 1;
 
   std::list<std::pair<const Food&, uint16_t>> portions;
+  FoodTree tree;
 
   //TODO: if empty, N = 0
   for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
@@ -62,6 +89,8 @@ int main()
     n *= preferredPortions;
 
     portions.push_back(foodAvailable.food, 0);
+    tree.addLeaves(createSubTree(foodAvailable));
+    tree.print();
   }
 
   std::cout << "N = " << N << std::endl;
