@@ -1,6 +1,7 @@
 #include "Tree.h"
 
 #include <iostream>
+#include <ctime>
 
 void depthSearch(const FoodTree::FoodNode* node
                  , FoodTree::Ration& ration, FoodTree::RationList& rationList)
@@ -68,7 +69,13 @@ FoodTree::RationList FoodTree::depthSearch()
 {
   FoodTree::Ration list;
   FoodTree::RationList rationList;
+
+  clock_t begin = clock();
   ::depthSearch(root_, list, rationList);
+  clock_t end = clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+  std::cout << "\n ~ depth search time " << elapsed_secs << std::endl << std::endl;
 
   return rationList;
 }
