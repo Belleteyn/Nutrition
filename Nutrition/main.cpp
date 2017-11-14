@@ -94,7 +94,15 @@ int main()
   Nutrition minErrorNutrition(0, 0, 0, 0);
   NutritionError minError(idealNutrition, minErrorNutrition);
 
-  auto rationList = tree.depthSearch(idealNutrition, 0.7);
+  auto allowedErrorComparator = [idealNutrition](const Nutrition& nutrition) -> bool
+  {
+    NutritionError error(idealNutrition, nutrition);
+    return error.error() < 0.4;
+  };
+
+  auto rationList = tree.depthSearch(allowedErrorComparator);
+  std::cout << "ration variants: " << rationList.size() << std::endl;
+
   for (auto ration = rationList.begin(); ration != rationList.end(); ++ration)
   {
     Nutrition sum(0, 0, 0, 0);

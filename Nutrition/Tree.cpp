@@ -4,31 +4,38 @@
 #include <ctime>
 
 void depthSearch(const FoodTree::FoodNode* node
-                 , FoodTree::Ration& ration, FoodTree::RationList& rationList)
+                 , FoodTree::Ration& ration
+                 , Nutrition& rationNutrition
+                 , FoodTree::RationList& rationList
+                 , const FoodTree::AllowedErrorComparator& comparator)
 {
-  if (node->getBody().getPortionMass() > 0)
+  auto& body = node->getBody();
+  auto& sub = node->getSub();
+
+  if (body.getPortionMass() > 0)
   {
-    ration.emplace_back(&node->getBody());
+    rationNutrition += body.getPortionNutrition();
+    ration.emplace_back(&body);
   }
 
-  if (!node->getSub().empty())
+  if (!sub.empty())
   {
-    auto sub = node->getSub();
     for (auto iter = sub.begin(); iter != sub.end(); ++iter)
     {
-      depthSearch(*iter, ration, rationList);
+      depthSearch(*iter, ration, rationNutrition, rationList, comparator);
     }
   }
   else
   {
-    if (!ration.empty())
+    if (!ration.empty() && comparator(rationNutrition))
     {
       rationList.emplace_back(ration);
     }
   }
 
-  if (node->getBody().getPortionMass() > 0)
+  if (body.getPortionMass() > 0)
   {
+    rationNutrition -= body.getPortionNutrition();
     ration.pop_back();
   }
 }
@@ -65,13 +72,15 @@ void FoodTree::print() const
   }
 }
 
-FoodTree::RationList FoodTree::depthSearch()
+FoodTree::RationList FoodTree::depthSearch(const AllowedErrorComparator& comparator)
 {
   FoodTree::Ration list;
+  Nutrition rationNutrition(0, 0, 0, 0);
+
   FoodTree::RationList rationList;
 
   clock_t begin = clock();
-  ::depthSearch(root_, list, rationList);
+  ::depthSearch(root_, list, rationNutrition, rationList, comparator);
   clock_t end = clock();
   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
