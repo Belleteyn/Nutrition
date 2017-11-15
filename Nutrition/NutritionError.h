@@ -38,6 +38,16 @@ struct NutritionError
     return std::max(abs(kkalErr), std::max(abs(proteinsErr), std::max(abs(carbohydratesErr), abs(fatsErr))));
   }
 
+  static float maxOverheading(const Nutrition& ideal, const Nutrition& actual)
+  {
+    auto pOver = actual.proteins / ideal.proteins - 1;
+    auto cOver = actual.carbohydrates / ideal.carbohydrates - 1;
+    auto fOver = actual.fats / ideal.fats - 1;
+    auto kOver = actual.kkal / ideal.kkal - 1;
+
+    return std::max(pOver, std::max(cOver, std::max(fOver, kOver)));
+  }
+
   Nutrient maxErrorNutrient() const
   {
     auto max = std::max(proteinsErr, std::max(carbohydratesErr, fatsErr));
