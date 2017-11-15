@@ -41,7 +41,7 @@ struct FoodAvailable
 };
 
 using SubTree = std::list<FoodTree::FoodNode*>;
-SubTree createSubTree(const FoodAvailable& avFood)
+SubTree createSubTree(const FoodAvailable& avFood, const Nutrition& ideal, const float allowedError)
 {
   SubTree subTree;
   const auto& daily = avFood.daily;
@@ -62,6 +62,14 @@ SubTree createSubTree(const FoodAvailable& avFood)
     }
 
     food.setPortion(portion);
+    auto overheading = NutritionError::maxOverheading(ideal, food.getPortionNutrition());
+    if (overheading > allowedError)
+    {
+      std::cout << "overheading: " << overheading << " for " << food.getName() << ", portion " << food.getPortionMass()
+                << " / " << food.getNutrient(NutritionError(ideal, food.getPortionNutrition()).maxErrorNutrient())
+                << std::endl;
+      return subTree;
+    }
 
     FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
     subTree.push_back(node);
@@ -109,14 +117,14 @@ int main()
   for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
   {
     auto foodAvailable = iter->second;
-    std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName();
+    std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName() << std::endl;
 
-    auto sub = createSubTree(foodAvailable);
+    auto sub = createSubTree(foodAvailable, idealNutrition, allowedError);
     if (sub.size() > 0)
     {
       N *= sub.size();
-
       tree.addLeaves(sub);
+      tree.print();
     }
   }
 
