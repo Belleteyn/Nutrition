@@ -64,7 +64,7 @@ int main()
 {
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
 
-  const float allowedError = 0.685;
+  const float allowedError = 0.3;
 
   uint64_t N = 1, n = 1;
 
@@ -94,10 +94,10 @@ int main()
   Nutrition minErrorNutrition(0, 0, 0, 0);
   NutritionError minError(idealNutrition, minErrorNutrition);
 
-  auto allowedErrorComparator = [idealNutrition](const Nutrition& nutrition) -> bool
+  auto allowedErrorComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
   {
     NutritionError error(idealNutrition, nutrition);
-    return error.error() < 0.4;
+    return error.error() < allowedError;
   };
 
   auto rationList = tree.depthSearch(allowedErrorComparator);
