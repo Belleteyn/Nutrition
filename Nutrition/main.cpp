@@ -10,6 +10,7 @@
 
 //TODO: add weights to nodes (max weight to node with preferred daily portion)
 //TODO: depth search with weights
+//TODO: remove branches with overheading
 
 struct FoodAvailable
 {
@@ -140,7 +141,12 @@ int main()
     return error.error() < allowedError;
   };
 
-  auto rationList = tree.depthSearch(allowedErrorComparator);
+  auto overheadingComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
+  {
+    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError;
+  };
+
+  auto rationList = tree.depthSearch(allowedErrorComparator, overheadingComparator);
   std::cout << "ration variants: " << rationList.size() << std::endl;
 
   for (auto ration = rationList.begin(); ration != rationList.end(); ++ration)

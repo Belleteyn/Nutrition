@@ -11,7 +11,7 @@ public:
   using Ration = std::list<const Food*>;
   using RationList = std::list<std::list<const Food*>>;
 
-  using AllowedErrorComparator = std::function<bool(const Nutrition&)>;
+  using NutritionErrorComparator = std::function<bool(const Nutrition&)>;
 
   FoodTree();
   virtual ~FoodTree();
@@ -20,7 +20,8 @@ public:
 
   void print() const;
 
-  RationList depthSearch(const AllowedErrorComparator& comparator);
+  RationList depthSearch(const NutritionErrorComparator& allowedErrorComparator
+                         , const NutritionErrorComparator& overheadingComparator);
 
 private:
   FoodNode* root_;
