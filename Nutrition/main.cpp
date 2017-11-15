@@ -8,18 +8,35 @@
 
 #include <Tree.h>
 
+//TODO: add weights to nodes (max weight to node with preferred daily portion)
+//TODO: depth search with weights
+
 struct FoodAvailable
 {
-  Food food = Food("");
-  uint16_t maxWeightAvailable = 0;
-  uint16_t portionPreferred = 200;
-  uint16_t deltaPortion = 10;
+  struct Daily
+  {
+    uint16_t minDailyPortion = 0;
+    uint16_t preferredDailyPortion = 0;
+    uint16_t maxDailyPortion = 0;
 
-  FoodAvailable(const Food& food, uint16_t maxWeight = 0, uint16_t portion = 0, uint16_t delta = 0)
+    Daily(uint16_t max = 0, uint16_t preferred = 0, uint16_t min = 0)
+      : minDailyPortion(min)
+      , preferredDailyPortion(preferred)
+      , maxDailyPortion(max)
+    {}
+  };
+
+  Food food = Food("");
+
+  uint16_t maxWeightAvailable = 0;
+  uint16_t deltaPortion = 10;
+  Daily daily;
+
+  FoodAvailable(const Food& food, uint16_t maxWeight = 0, uint16_t delta = 0, const Daily& daily = Daily())
     : food(food)
     , maxWeightAvailable(maxWeight)
-    , portionPreferred(portion)
     , deltaPortion(delta)
+    , daily(daily)
   {}
 };
 
@@ -27,13 +44,21 @@ using SubTree = std::list<FoodTree::FoodNode*>;
 SubTree createSubTree(const FoodAvailable& avFood)
 {
   SubTree subTree;
-  uint16_t portion = 0;
+  const auto& daily = avFood.daily;
 
+  if (avFood.maxWeightAvailable == 0 || daily.maxDailyPortion == 0)
+    return subTree;
+
+  uint16_t portion = daily.minDailyPortion;
   Food food(avFood.food);
 
-  while (portion <= avFood.portionPreferred) {
-    if (portion > avFood.portionPreferred) {
-      portion = avFood.portionPreferred;
+  while (portion <= daily.maxDailyPortion && portion <= avFood.maxWeightAvailable) {
+    if (portion > daily.maxDailyPortion) {
+      portion = daily.maxDailyPortion;
+    }
+
+    if (portion > avFood.maxWeightAvailable) {
+      portion = avFood.maxWeightAvailable;
     }
 
     food.setPortion(portion);
@@ -49,15 +74,25 @@ SubTree createSubTree(const FoodAvailable& avFood)
 
 using GIPair = std::pair<int16_t, FoodAvailable>;
 static std::multimap<int16_t, FoodAvailable> giMap = {
-  GIPair(10, FoodAvailable(Food("avocado", 2, 6, 20, 212), 300, 100, 10)),
-  GIPair(30, FoodAvailable(Food("apple", 0.4, 9.8, 0.4, 47), 1000, 300, 150)),
-  GIPair(60, FoodAvailable(Food("buckweed", 12.6, 62.1, 3.3, 313), 450, 100, 10)),
-  GIPair(60, FoodAvailable(Food("banana", 1.5, 21.8, 0.2, 95), 120 * 5, 120, 120)),
-  GIPair(90, FoodAvailable(Food("honey", 0.8, 81.5, 0, 329), 350, 15, 5)),
-  GIPair(0, FoodAvailable(Food("tvorog", 16.5, 1.3, 0, 71), 400, 200, 100)),
-  GIPair(0, FoodAvailable(Food("chicken", 23.6, 0.4, 1.9, 113), 820, 200, 10)),
-  GIPair(100, FoodAvailable(Food("sweets", 2.5, 63.8, 14.2, 375), 200, 30, 10)),
-  GIPair(15, FoodAvailable(Food("kashew paste", 10, 9, 51, 590), 320, 50, 5))
+  GIPair(10, FoodAvailable(Food("avocado", 2, 6, 20, 212), 40, 10, FoodAvailable::Daily(300, 150))),
+  GIPair(30, FoodAvailable(Food("apple", 0.4, 9.8, 0.4, 47), 1000, 150, FoodAvailable::Daily(300, 150))),
+  GIPair(60, FoodAvailable(Food("buckweed", 12.6, 62.1, 3.3, 313), 450, 40, FoodAvailable::Daily(160))),
+  GIPair(60, FoodAvailable(Food("banana", 1.5, 21.8, 0.2, 95), 120 * 5, 120, FoodAvailable::Daily(120, 120))),
+  //GIPair(90, FoodAvailable(Food("honey", 0.8, 81.5, 0, 329), 350, 5, FoodAvailable::Daily(15))),
+  GIPair(0, FoodAvailable(Food("Very Serious Cow (fat-free curd)", 18, 3.3, 0, 85), 440, 110, FoodAvailable::Daily(220, 110, 110))),
+  GIPair(0, FoodAvailable(Food("Danone (fat-free smooth curd)", 10.9, 4, 0.1, 61), 340, 85, FoodAvailable::Daily(170, 85, 85))),
+  GIPair(0, FoodAvailable(Food("chicken", 23.6, 0.4, 1.9, 113), 0, 50, FoodAvailable::Daily(200, 200))),
+  //GIPair(100, FoodAvailable(Food("sweets", 2.5, 63.8, 14.2, 375), 200, 10, FoodAvailable::Daily(30))),
+  //GIPair(15, FoodAvailable(Food("kashew paste", 10, 9, 51, 590), 320, 5, FoodAvailable::Daily(50, 20))),
+  GIPair(0, FoodAvailable(Food("linseed oil", 0, 0, 99.8, 898), 200, 5, FoodAvailable::Daily(10, 10, 5))),
+  GIPair(55, FoodAvailable(Food("oatmeal mistral", 13.8, 69.8, 5.9, 355), 400, 40, FoodAvailable::Daily(40, 40, 40))),
+  GIPair(70, FoodAvailable(Food("cheese pancake", 45, 35, 20, 141), 184, 92, FoodAvailable::Daily(184, 92))),
+  GIPair(0, FoodAvailable(Food("ricotta caramel", 4.9, 17.5, 9, 170), 200, 10, FoodAvailable::Daily(50, 30))),
+  GIPair(25, FoodAvailable(Food("milk 2,5%", 2.9, 4.8, 2.5, 53), 1000, 10, FoodAvailable::Daily(40, 40, 20))),
+  GIPair(22, FoodAvailable(Food("pearl barley", 10, 75, 1, 350), 240, 40, FoodAvailable::Daily(80, 40))),
+  GIPair(0, FoodAvailable(Food("red salmon", 19, 0, 10, 135), 200, 100, FoodAvailable::Daily(200, 100))),
+  GIPair(0, FoodAvailable(Food("kefir 1%", 2.8, 4, 1, 36), 900, 220, FoodAvailable::Daily(440, 220))),
+  GIPair(35, FoodAvailable(Food("QuestBar Hero (blueberry cobbler)", 28.3, 50, 11.7, 283), 180, 60, FoodAvailable::Daily(60)))
 };
 
 int main()
@@ -76,7 +111,13 @@ int main()
     auto foodAvailable = iter->second;
     std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName();
 
+    auto sub = createSubTree(foodAvailable);
+    if (sub.size() > 0)
+    {
+      N *= sub.size();
 
+      tree.addLeaves(sub);
+    }
   }
 
   std::cout << "N = " << N << std::endl;
