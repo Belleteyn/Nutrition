@@ -42,6 +42,31 @@ struct FoodAvailable
 };
 
 using SubTree = std::list<FoodTree::FoodNode*>;
+
+bool addNode(Food& food, uint16_t& portion, const FoodAvailable& avFood, const FoodAvailable::Daily& daily
+             , const Nutrition& ideal, const float allowedError)
+{
+  if (portion > daily.maxDailyPortion) {
+    portion = daily.maxDailyPortion;
+  }
+
+  if (portion > avFood.maxWeightAvailable) {
+    portion = avFood.maxWeightAvailable;
+  }
+
+  food.setPortion(portion);
+  auto overheading = NutritionError::maxOverheading(ideal, food.getPortionNutrition());
+  if (overheading > allowedError)
+  {
+    std::cout << "overheading: " << overheading << " for " << food.getName() << ", portion " << food.getPortionMass()
+              << " / " << food.getNutrient(NutritionError(ideal, food.getPortionNutrition()).maxErrorNutrient())
+              << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 SubTree createSubTree(const FoodAvailable& avFood, const Nutrition& ideal, const float allowedError)
 {
   SubTree subTree;
@@ -53,29 +78,24 @@ SubTree createSubTree(const FoodAvailable& avFood, const Nutrition& ideal, const
   uint16_t portion = daily.minDailyPortion;
   Food food(avFood.food);
 
-  while (portion <= daily.maxDailyPortion && portion <= avFood.maxWeightAvailable) {
-    if (portion > daily.maxDailyPortion) {
-      portion = daily.maxDailyPortion;
-    }
+  if (!addNode(food, portion, avFood, daily, ideal, allowedError))
+  {
+    return subTree;
+  }
 
-    if (portion > avFood.maxWeightAvailable) {
-      portion = avFood.maxWeightAvailable;
-    }
+  FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
+  subTree.push_back(node);
 
-    food.setPortion(portion);
-    auto overheading = NutritionError::maxOverheading(ideal, food.getPortionNutrition());
-    if (overheading > allowedError)
+  while (portion < daily.maxDailyPortion && portion < avFood.maxWeightAvailable) {
+    portion += avFood.deltaPortion;
+
+    if (!addNode(food, portion, avFood, daily, ideal, allowedError))
     {
-      std::cout << "overheading: " << overheading << " for " << food.getName() << ", portion " << food.getPortionMass()
-                << " / " << food.getNutrient(NutritionError(ideal, food.getPortionNutrition()).maxErrorNutrient())
-                << std::endl;
       return subTree;
     }
 
     FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
     subTree.push_back(node);
-
-    portion += avFood.deltaPortion;
   }
 
   return subTree;
