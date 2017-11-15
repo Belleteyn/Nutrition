@@ -33,6 +33,12 @@ public:
   const T& getBody() const { return body_; }
   const std::list<Node*>& getSub() const { return sub_; }
 
+
+  typename std::list<Node*>::iterator eraseSub(typename std::list<Node*>::const_iterator iter)
+  {
+    return sub_.erase(iter, sub_.end());
+  }
+
 private:
   T body_;
   std::list<Node*> sub_;
