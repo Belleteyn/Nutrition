@@ -66,7 +66,7 @@ int main()
 
   const float allowedError = 0.3;
 
-  uint64_t N = 1, n = 1;
+  uint64_t N = 1;
 
   FoodTree tree;
 
@@ -75,20 +75,11 @@ int main()
   {
     auto foodAvailable = iter->second;
     std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName();
-    auto portions = ceil(static_cast<float>(foodAvailable.maxWeightAvailable) / foodAvailable.deltaPortion);
-    std::cout << " / max portions " << portions;
 
-    auto preferredPortions = ceil(static_cast<float>(foodAvailable.portionPreferred) / foodAvailable.deltaPortion);
-    std::cout << " / preferredPortions " << preferredPortions << std::endl;
 
-    N *= portions;
-    n *= preferredPortions;
-
-    tree.addLeaves(createSubTree(foodAvailable));
   }
 
   std::cout << "N = " << N << std::endl;
-  std::cout << "n = " << n << std::endl;
 
   FoodTree::Ration* minErrorRation = nullptr;
   Nutrition minErrorNutrition(0, 0, 0, 0);
