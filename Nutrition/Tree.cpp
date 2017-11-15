@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ctime>
 
-void depthSearch(const FoodTree::FoodNode* node
+void depthSearch(FoodTree::FoodNode* node
                  , FoodTree::Ration& ration
                  , Nutrition& rationNutrition
                  , FoodTree::RationList& rationList
@@ -19,21 +19,34 @@ void depthSearch(const FoodTree::FoodNode* node
     ration.emplace_back(&body);
   }
 
-  if (overheadingComparator(rationNutrition))
+  if (!sub.empty())
   {
-    if (!sub.empty())
+    for (auto iter = sub.begin(); iter != sub.end(); ++iter)
     {
-      for (auto iter = sub.begin(); iter != sub.end(); ++iter)
+      //TODO: check validity of this
+      auto checkNutrition = rationNutrition + (*iter)->getBody().getPortionNutrition();
+      if (!overheadingComparator(checkNutrition))
+      {
+        if (iter != sub.begin())
+        {
+          std::cout << "overhead: " << body.getName() << " (" << body.getPortionMass() << ") "
+                    << " + " << (*iter)->getBody().getName() << " (" << (*iter)->getBody().getPortionMass() << ")" << std::endl;
+          node->eraseSub(iter);
+
+          break;
+        }
+      }
+      else
       {
         depthSearch(*iter, ration, rationNutrition, rationList, comparator, overheadingComparator);
       }
     }
-    else
+  }
+  else
+  {
+    if (!ration.empty() && comparator(rationNutrition))
     {
-      if (!ration.empty() && comparator(rationNutrition))
-      {
-        rationList.emplace_back(ration);
-      }
+      rationList.emplace_back(ration);
     }
   }
 
