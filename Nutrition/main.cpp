@@ -128,7 +128,7 @@ int main()
 {
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
 
-  const float allowedError = 0.3;
+  const float allowedError = 0.5;
 
   uint64_t N = 1;
 
@@ -163,7 +163,7 @@ int main()
 
   auto overheadingComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
   {
-    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError;
+    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError * 2;
   };
 
   auto rationList = tree.depthSearch(allowedErrorComparator, overheadingComparator);
