@@ -7,8 +7,7 @@ void depthSearch(FoodTree::FoodNode* node
                  , FoodTree::Ration& ration
                  , Nutrition& rationNutrition
                  , FoodTree::RationList& rationList
-                 , const FoodTree::NutritionErrorComparator& comparator
-                 , const FoodTree::NutritionErrorComparator& overheadingComparator)
+                 , const FoodTree::NutritionErrorComparator& comparator)
 {
   auto& body = node->getBody();
   auto& sub = node->getSub();
@@ -23,23 +22,7 @@ void depthSearch(FoodTree::FoodNode* node
   {
     for (auto iter = sub.begin(); iter != sub.end(); ++iter)
     {
-      //TODO: check validity of this
-      auto checkNutrition = rationNutrition + (*iter)->getBody().getPortionNutrition();
-      if (!overheadingComparator(checkNutrition))
-      {
-        if (iter != sub.begin())
-        {
-          std::cout << "overhead: " << body.getName() << " (" << body.getPortionMass() << ") "
-                    << " + " << (*iter)->getBody().getName() << " (" << (*iter)->getBody().getPortionMass() << ")" << std::endl;
-          node->eraseSub(iter);
-
-          break;
-        }
-      }
-      else
-      {
-        depthSearch(*iter, ration, rationNutrition, rationList, comparator, overheadingComparator);
-      }
+      depthSearch(*iter, ration, rationNutrition, rationList, comparator);
     }
   }
   else
@@ -89,8 +72,7 @@ void FoodTree::print() const
   }
 }
 
-FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allowedErrorComparator
-                                           , const NutritionErrorComparator& overheadingComparator)
+FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allowedErrorComparator)
 {
   FoodTree::Ration list;
   Nutrition rationNutrition(0, 0, 0, 0);
@@ -98,7 +80,7 @@ FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allow
   FoodTree::RationList rationList;
 
   clock_t begin = clock();
-  ::depthSearch(root_, list, rationNutrition, rationList, allowedErrorComparator, overheadingComparator);
+  ::depthSearch(root_, list, rationNutrition, rationList, allowedErrorComparator);
   clock_t end = clock();
   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 

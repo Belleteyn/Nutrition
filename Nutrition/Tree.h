@@ -20,8 +20,7 @@ public:
 
   void print() const;
 
-  RationList depthSearch(const NutritionErrorComparator& allowedErrorComparator
-                         , const NutritionErrorComparator& overheadingComparator);
+  RationList depthSearch(const NutritionErrorComparator& allowedErrorComparator);
 
 private:
   FoodNode* root_;

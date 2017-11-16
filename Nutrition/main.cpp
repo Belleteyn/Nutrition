@@ -165,12 +165,7 @@ int main()
     return error.error() < allowedError;
   };
 
-  auto overheadingComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
-  {
-    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError * 2;
-  };
-
-  auto rationList = tree.depthSearch(allowedErrorComparator, overheadingComparator);
+  auto rationList = tree.depthSearch(allowedErrorComparator);
   std::cout << "ration variants: " << rationList.size() << std::endl;
 
   for (auto ration = rationList.begin(); ration != rationList.end(); ++ration)
