@@ -20,7 +20,8 @@ void depthSearch(FoodTree::FoodNode* node
                  , FoodTree::Ration& ration
                  , Nutrition& rationNutrition
                  , FoodTree::RationList& rationList
-                 , const FoodTree::NutritionErrorComparator& comparator)
+                 , const FoodTree::NutritionErrorComparator& comparator
+                 , const FoodTree::NutritionErrorComparator& overheadingComparator)
 {
   auto& body = node->getBody();
   auto& sub = node->getSub();
@@ -31,18 +32,21 @@ void depthSearch(FoodTree::FoodNode* node
     ration.emplace_back(&body);
   }
 
-  if (!sub.empty())
+  if (overheadingComparator(rationNutrition))
   {
-    for (auto iter = sub.begin(); iter != sub.end(); ++iter)
+    if (!sub.empty())
     {
-      depthSearch(*iter, ration, rationNutrition, rationList, comparator);
+      for (auto iter = sub.begin(); iter != sub.end(); ++iter)
+      {
+        depthSearch(*iter, ration, rationNutrition, rationList, comparator, overheadingComparator);
+      }
     }
-  }
-  else
-  {
-    if (!ration.empty() && comparator(rationNutrition))
+    else
     {
-      rationList.emplace_back(ration);
+      if (!ration.empty() && comparator(rationNutrition))
+      {
+        rationList.emplace_back(ration);
+      }
     }
   }
 
@@ -107,7 +111,8 @@ void FoodTree::print() const
   }
 }
 
-FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allowedErrorComparator)
+FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allowedErrorComparator
+                                           , const NutritionErrorComparator& overheadingComparator)
 {
   FoodTree::Ration list;
   Nutrition rationNutrition(0, 0, 0, 0);
@@ -115,7 +120,7 @@ FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allow
   FoodTree::RationList rationList;
 
   clock_t begin = clock();
-  ::depthSearch(root_, list, rationNutrition, rationList, allowedErrorComparator);
+  ::depthSearch(root_, list, rationNutrition, rationList, allowedErrorComparator, overheadingComparator);
   clock_t end = clock();
   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 

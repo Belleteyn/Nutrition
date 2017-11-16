@@ -170,7 +170,7 @@ int main()
     return error.error() < allowedError;
   };
 
-  auto rationList = tree.depthSearch(allowedErrorComparator);
+  auto rationList = tree.depthSearch(allowedErrorComparator, overheadingComparator);
   std::cout << "ration variants: " << rationList.size() << std::endl;
 
   for (auto ration = rationList.begin(); ration != rationList.end(); ++ration)
