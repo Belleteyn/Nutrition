@@ -16,7 +16,7 @@ public:
   FoodTree();
   virtual ~FoodTree();
 
-  void addLeaves(const std::list<FoodNode*>& leaves);
+  void addLeaves(const std::list<FoodNode*>& leaves, const NutritionErrorComparator& overheadingComparator);
 
   void print() const;
 

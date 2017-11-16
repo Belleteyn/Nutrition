@@ -52,11 +52,33 @@ FoodTree::~FoodTree()
   delete root_;
 }
 
-void FoodTree::addLeaves(const std::list<FoodNode*>& leaves)
+void FoodTree::addLeaves(const std::list<FoodNode*>& leaves, const NutritionErrorComparator& overheadingComparator)
 {
   for (auto iter = leaves_.begin(); iter != leaves_.end(); ++iter)
   {
-    (*iter)->setSub(leaves);
+    bool setFull = true;
+    for (auto subIter = leaves.begin(); subIter != leaves.end(); ++subIter)
+    {
+      auto checkNutrition = (*iter)->getBody().getPortionNutrition() + (*subIter)->getBody().getPortionNutrition();
+      if (!overheadingComparator(checkNutrition))
+      {
+        std::cout << "compare "<< (*iter)->getBody().getName() << " (" << (*iter)->getBody().getPortionMass() << ") "
+                  << " + " << (*subIter)->getBody().getName() << " (" << (*subIter)->getBody().getPortionMass() << ")" << std::endl;
+
+        std::cout << "overhead: " << checkNutrition.kkal << " | " << checkNutrition.proteins << "/"
+                  << checkNutrition.carbohydrates << "/" << checkNutrition.fats << std::endl;
+
+        std::list<FoodNode*> leavesCopy(leaves.begin(), subIter);
+        (*iter)->setSub(leavesCopy);
+
+        setFull = false;
+        break;
+      }
+    }
+
+    if (setFull) {
+      (*iter)->setSub(leaves);
+    }
   }
 
   leaves_ = leaves;

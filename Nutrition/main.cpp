@@ -138,6 +138,11 @@ int main()
 
   FoodTree tree;
 
+  auto overheadingComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
+  {
+    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError;
+  };
+
   //TODO: if empty, N = 0
   for (auto iter = giMap.begin(); iter != giMap.end(); ++iter)
   {
@@ -148,7 +153,7 @@ int main()
     if (sub.size() > 0)
     {
       N *= sub.size();
-      tree.addLeaves(sub);
+      tree.addLeaves(sub, overheadingComparator);
       tree.print();
     }
   }
