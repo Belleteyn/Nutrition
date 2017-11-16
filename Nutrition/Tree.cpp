@@ -3,6 +3,19 @@
 #include <iostream>
 #include <ctime>
 
+
+void printSub(const FoodTree::FoodNode& node)
+{
+  std::cout << node.getBody().getName() << " (" << node.getBody().getPortionMass() << ") sub:\n";
+  auto sub = node.getSub();
+
+  for (auto subIter = sub.begin(); subIter != sub.end(); ++subIter)
+  {
+    std::cout << (*subIter)->getBody().getName() << " " << (*subIter)->getBody().getPortionMass() << std::endl;
+  }
+}
+
+
 void depthSearch(FoodTree::FoodNode* node
                  , FoodTree::Ration& ration
                  , Nutrition& rationNutrition
