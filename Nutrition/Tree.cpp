@@ -129,7 +129,7 @@ void FoodTree::addLeaves(const std::list<FoodNodePtr>& sub, const NutritionError
 
     (*iter)->setSub(filtered);
 
-    printSub(*iter->get());
+    //printSub(*iter->get());
   }
 
   leaves_ = sub;

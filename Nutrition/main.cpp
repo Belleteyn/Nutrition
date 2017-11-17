@@ -70,7 +70,7 @@ int main()
     {
       N *= sub.size();
       tree.addLeaves(sub, overheadingComparator);
-      tree.print();
+      //tree.print();
     }
   }
 
@@ -112,28 +112,25 @@ int main()
       minErrorRation = &(*ration);
     }
 
-//    if (error.error() <= allowedError)
+//    std::cout << "ration: " << ration->size() << std::endl;
+//    for (auto iter = ration->begin(); iter != ration->end(); ++iter)
 //    {
-//      std::cout << "ration: " << ration->size() << std::endl;
-//      for (auto iter = ration->begin(); iter != ration->end(); ++iter)
-//      {
-//        std::cout << (*iter)->getName() << " -> " << (*iter)->getPortionMass() << std::endl;
-//      }
-
-//      std::cout << "\nSummary: Error = " << error.error() * 100 << std::endl;
-
-//      std::cout << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")"
-//                << ", kkal error = " << error.kkalErr;
-
-//      std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")"
-//                << ", error = " << error.proteinsErr;
-
-//      std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")"
-//                << ", error = " << error.carbohydratesErr;
-
-//      std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")"
-//                << ", error = " << error.fatsErr << std::endl << std::endl;
+//      std::cout << (*iter)->getName() << " -> " << (*iter)->getPortionMass() << std::endl;
 //    }
+
+//    std::cout << "\nSummary: Error = " << error.error() * 100 << std::endl;
+
+//    std::cout << "kkal: " << sum.kkal << "(" << idealNutrition.kkal << ")"
+//              << ", kkal error = " << error.kkalErr;
+
+//    std::cout << "\np: " << sum.proteins << "(" << idealNutrition.proteins << ")"
+//              << ", error = " << error.proteinsErr;
+
+//    std::cout << "\nc: " << sum.carbohydrates << "(" << idealNutrition.carbohydrates << ")"
+//              << ", error = " << error.carbohydratesErr;
+
+//    std::cout << "\nf: " << sum.fats << "(" << idealNutrition.fats << ")"
+//              << ", error = " << error.fatsErr << std::endl << std::endl;
   }
 
   if (!minErrorRation)
