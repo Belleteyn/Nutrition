@@ -1,13 +1,13 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include <Node.h>
-#include <Food.h>
+#include <FoodNode.h>
 
 class FoodTree
 {
 public:
-  using FoodNode = Node<Food>;
+  using SubTree = std::list<FoodNode>;
+
   using Ration = std::list<const Food*>;
   using RationList = std::list<std::list<const Food*>>;
 
@@ -16,16 +16,14 @@ public:
   FoodTree();
   virtual ~FoodTree();
 
-  void addLeaves(const std::list<FoodNode*>& leaves, const NutritionErrorComparator& overheadingComparator);
-
-  void print() const;
+  void addSubTree(const SubTree& sub, const NutritionErrorComparator& overheadingComparator);
 
   RationList depthSearch(const NutritionErrorComparator& allowedErrorComparator
                          , const NutritionErrorComparator& overheadingComparator);
 
 private:
-  FoodNode* root_;
-  std::list<FoodNode*> leaves_;
+  FoodNode root_;
+  std::list<FoodNode> leaves_;
 };
 
 #endif // TREE_H
