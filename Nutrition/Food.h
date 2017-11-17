@@ -9,6 +9,9 @@ const float kkalPerFatGram = 9.29;
 const float kkalPerProteinGram = 4.11;
 const float kkalPerCarbohydrateGram = 4.11;
 
+class Food;
+typedef std::shared_ptr<Food> FoodPtr;
+
 class Food
 {
 public:
