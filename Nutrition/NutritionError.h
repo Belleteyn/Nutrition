@@ -17,25 +17,38 @@ struct NutritionError
 
   NutritionError(const Nutrition& ideal, const Nutrition& actual)
   {
+    compareActual(ideal, actual);
+  }
+
+  float error() const
+  {
+    return std::max(abs(kkalErr), std::max(abs(proteinsErr), std::max(abs(carbsErr), abs(fatsErr))));
+  }
+
+  void compareActual(const Nutrition& ideal, const Nutrition& actual)
+  {
     kkalErr = 1 - actual.kkal / ideal.kkal;
     proteinsErr = 1 - actual.proteins / ideal.proteins;
     carbsErr = 1 - actual.carbs / ideal.carbs;
     fatsErr = 1 - actual.fats / ideal.fats;
 
-//    assert(kkalErr >= -1);
-//    assert(proteinsErr >= -1);
-//    assert(carbohydratesErr >= -1);
-//    assert(fatsErr >= -1);
+    assert(kkalErr >= -1);
+    assert(proteinsErr >= -1);
+    assert(carbsErr >= -1);
+    assert(fatsErr >= -1);
 
-//    assert(kkalErr <= 1);
-//    assert(proteinsErr <= 1);
-//    assert(carbohydratesErr <= 1);
-//    assert(fatsErr <= 1);
+    assert(kkalErr <= 1);
+    assert(proteinsErr <= 1);
+    assert(carbsErr <= 1);
+    assert(fatsErr <= 1);
   }
 
-  float error() const
+  static Nutrition overheading(const Nutrition& ideal, const Nutrition& actual)
   {
-    return std::max(abs(kkalErr), std::max(abs(proteinsErr), std::max(abs(carbohydratesErr), abs(fatsErr))));
+    return Nutrition(actual.kkal / ideal.kkal - 1
+                     , actual.proteins / ideal.proteins - 1
+                     , actual.carbs / ideal.carbs - 1
+                     , actual.fats / ideal.fats - 1);
   }
 
   static float maxOverheading(const Nutrition& ideal, const Nutrition& actual)
