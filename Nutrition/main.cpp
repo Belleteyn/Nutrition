@@ -42,16 +42,21 @@ int main()
 {
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
 
-  const float allowedOverheading = 0.2;
+  const Nutrition allowedNutritionOverheading(0.5, 0.5, 0.3, 0.1);
   float allowedError = 1;
 
   uint64_t N = 1;
 
   FoodTree tree;
 
-  auto overheadingComparator = [idealNutrition, allowedOverheading](const Nutrition& nutrition) -> bool
+  auto overheadingComparator = [idealNutrition, &allowedNutritionOverheading](const Nutrition& nutrition) -> bool
   {
-    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedOverheading;
+    auto overheading = NutritionError::overheading(idealNutrition, nutrition);
+
+    return overheading.carbs < allowedNutritionOverheading.carbs
+        && overheading.proteins < allowedNutritionOverheading.proteins
+        && overheading.fats < allowedNutritionOverheading.fats
+        && overheading.kkal < allowedNutritionOverheading.kkal;
   };
 
   //TODO: if empty, N = 0
