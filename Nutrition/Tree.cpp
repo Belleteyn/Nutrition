@@ -85,7 +85,7 @@ SubTree FoodTree::createSubTree(const FoodAvailable& avFood, const FoodTree::Nut
     return subTree;
   }
 
-  subTree.push_back(node);
+  subTree.emplace_back(node);
 
   while (portion < daily.maxDailyPortion && portion < avFood.maxWeightAvailable) {
     portion += avFood.deltaPortion;
@@ -97,7 +97,7 @@ SubTree FoodTree::createSubTree(const FoodAvailable& avFood, const FoodTree::Nut
       return subTree;
     }
 
-    subTree.push_back(node);
+    subTree.emplace_back(node);
   }
 
   return subTree;
