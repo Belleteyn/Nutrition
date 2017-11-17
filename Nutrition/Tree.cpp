@@ -107,29 +107,27 @@ void FoodTree::addLeaves(const std::list<FoodNodePtr>& sub, const NutritionError
 {
   for (auto iter = leaves_.begin(); iter != leaves_.end(); ++iter)
   {
-    bool setFull = true;
+    std::list<FoodNodePtr> filtered;
+
     for (auto subIter = sub.begin(); subIter != sub.end(); ++subIter)
     {
       auto checkNutrition = (*iter)->getBody().getPortionNutrition() + (*subIter)->getBody().getPortionNutrition();
-      if (!overheadingComparator(checkNutrition))
+      if (overheadingComparator(checkNutrition))
+      {
+        filtered.emplace_front(*subIter);
+      }
+      else
       {
         std::cout << "compare "<< (*iter)->getBody().getName() << " (" << (*iter)->getBody().getPortionMass() << ") "
                   << " + " << (*subIter)->getBody().getName() << " (" << (*subIter)->getBody().getPortionMass() << ")" << std::endl;
 
         std::cout << "overhead: " << checkNutrition.kkal << " | " << checkNutrition.proteins << "/"
                   << checkNutrition.carbohydrates << "/" << checkNutrition.fats << std::endl;
-
-        std::list<FoodNodePtr> leavesCopy(sub.begin(), subIter);
-        (*iter)->setSub(leavesCopy);
-
-        setFull = false;
         break;
       }
     }
 
-    if (setFull) {
-      (*iter)->setSub(sub);
-    }
+    (*iter)->setSub(filtered);
 
     printSub(*iter->get());
   }
