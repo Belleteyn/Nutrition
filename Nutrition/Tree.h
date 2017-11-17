@@ -2,6 +2,9 @@
 #define TREE_H
 
 #include <FoodNode.h>
+#include <FoodAvailable.h>
+
+using SubTree = std::list<FoodNodePtr>;
 
 class FoodTree
 {
@@ -14,12 +17,18 @@ public:
   FoodTree();
   virtual ~FoodTree();
 
-  void addLeaves(const std::list<FoodNode*>& leaves, const NutritionErrorComparator& overheadingComparator);
+  SubTree createSubTree(const FoodAvailable& avFood, const NutritionErrorComparator& overheadingComparator) const;
+
+  void addLeaves(const std::list<FoodNodePtr>& sub, const NutritionErrorComparator& overheadingComparator);
 
   void print() const;
 
   RationList depthSearch(const NutritionErrorComparator& allowedErrorComparator
                          , const NutritionErrorComparator& overheadingComparator);
+
+private:
+  void setPortion(Food& food, uint16_t& portion, uint16_t maxDaily, uint16_t maxAvailable) const;
+  FoodNodePtr createNode(const Food& food, const NutritionErrorComparator& overheadingComparator) const;
 
 private:
   FoodNodePtr root_;

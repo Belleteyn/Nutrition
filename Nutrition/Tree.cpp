@@ -4,7 +4,7 @@
 #include <ctime>
 
 
-void printSub(const FoodTree::FoodNode& node)
+void printSub(const FoodNode& node)
 {
   std::cout << node.getBody().getName() << " (" << node.getBody().getPortionMass() << ") sub:\n";
   auto sub = node.getSub();
@@ -16,7 +16,7 @@ void printSub(const FoodTree::FoodNode& node)
 }
 
 
-void depthSearch(FoodTree::FoodNode* node
+void depthSearch(FoodNodePtr node
                  , FoodTree::Ration& ration
                  , Nutrition& rationNutrition
                  , FoodTree::RationList& rationList
@@ -65,16 +65,50 @@ FoodTree::FoodTree()
 }
 
 FoodTree::~FoodTree()
+{}
+
+SubTree FoodTree::createSubTree(const FoodAvailable& avFood, const FoodTree::NutritionErrorComparator& overheadingComparator) const
 {
-  delete root_;
+  SubTree subTree;
+  const auto& daily = avFood.daily;
+
+  if (avFood.maxWeightAvailable == 0 || daily.maxDailyPortion == 0)
+    return subTree;
+
+  uint16_t portion = daily.minDailyPortion;
+  Food food(avFood.food);
+
+  setPortion(food, portion, daily.maxDailyPortion, avFood.maxWeightAvailable);
+  auto node = createNode(food, overheadingComparator);
+  if (!node)
+  {
+    return subTree;
+  }
+
+  subTree.push_back(node);
+
+  while (portion < daily.maxDailyPortion && portion < avFood.maxWeightAvailable) {
+    portion += avFood.deltaPortion;
+
+    setPortion(food, portion, daily.maxDailyPortion, avFood.maxWeightAvailable);
+    auto node = createNode(food, overheadingComparator);
+    if (!node)
+    {
+      return subTree;
+    }
+
+    subTree.push_back(node);
+  }
+
+  return subTree;
 }
 
-void FoodTree::addLeaves(const std::list<FoodNode*>& leaves, const NutritionErrorComparator& overheadingComparator)
+void FoodTree::addLeaves(const std::list<FoodNodePtr>& sub, const NutritionErrorComparator& overheadingComparator)
 {
   for (auto iter = leaves_.begin(); iter != leaves_.end(); ++iter)
   {
     bool setFull = true;
-    for (auto subIter = leaves.begin(); subIter != leaves.end(); ++subIter)
+    for (auto subIter = sub.begin(); subIter != sub.end(); ++subIter)
     {
       auto checkNutrition = (*iter)->getBody().getPortionNutrition() + (*subIter)->getBody().getPortionNutrition();
       if (!overheadingComparator(checkNutrition))
@@ -85,7 +119,7 @@ void FoodTree::addLeaves(const std::list<FoodNode*>& leaves, const NutritionErro
         std::cout << "overhead: " << checkNutrition.kkal << " | " << checkNutrition.proteins << "/"
                   << checkNutrition.carbohydrates << "/" << checkNutrition.fats << std::endl;
 
-        std::list<FoodNode*> leavesCopy(leaves.begin(), subIter);
+        std::list<FoodNodePtr> leavesCopy(sub.begin(), subIter);
         (*iter)->setSub(leavesCopy);
 
         setFull = false;
@@ -94,11 +128,13 @@ void FoodTree::addLeaves(const std::list<FoodNode*>& leaves, const NutritionErro
     }
 
     if (setFull) {
-      (*iter)->setSub(leaves);
+      (*iter)->setSub(sub);
     }
+
+    printSub(*iter->get());
   }
 
-  leaves_ = leaves;
+  leaves_ = sub;
 }
 
 void FoodTree::print() const
@@ -127,4 +163,27 @@ FoodTree::RationList FoodTree::depthSearch(const NutritionErrorComparator& allow
   std::cout << "\n ~ depth search time " << elapsed_secs << std::endl << std::endl;
 
   return rationList;
+}
+
+void FoodTree::setPortion(Food& food, uint16_t& portion, uint16_t maxDaily, uint16_t maxAvailable) const
+{
+  if (portion > maxDaily) {
+    portion = maxDaily;
+  }
+
+  if (portion > maxAvailable) {
+    portion = maxAvailable;
+  }
+
+  food.setPortion(portion);
+}
+
+FoodNodePtr FoodTree::createNode(const Food& food, const FoodTree::NutritionErrorComparator& overheadingComparator) const
+{
+  if (overheadingComparator(food.getPortionNutrition()))
+  {
+    return FoodNodePtr(new FoodNode(food));
+  }
+
+  return nullptr;
 }

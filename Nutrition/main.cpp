@@ -15,66 +15,6 @@
 
 //TODO: dynamically change allowed error (based on available food)
 
-using SubTree = std::list<FoodTree::FoodNode*>;
-
-bool addNode(Food& food, uint16_t& portion, const FoodAvailable& avFood, const FoodAvailable::Daily& daily
-             , const Nutrition& ideal, const float allowedError)
-{
-  if (portion > daily.maxDailyPortion) {
-    portion = daily.maxDailyPortion;
-  }
-
-  if (portion > avFood.maxWeightAvailable) {
-    portion = avFood.maxWeightAvailable;
-  }
-
-  food.setPortion(portion);
-  auto overheading = NutritionError::maxOverheading(ideal, food.getPortionNutrition());
-  if (overheading > allowedError)
-  {
-    std::cout << "overheading: " << overheading << " for " << food.getName() << ", portion " << food.getPortionMass()
-              << " / " << food.getNutrient(NutritionError(ideal, food.getPortionNutrition()).maxErrorNutrient())
-              << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-SubTree createSubTree(const FoodAvailable& avFood, const Nutrition& ideal, const float allowedError)
-{
-  SubTree subTree;
-  const auto& daily = avFood.daily;
-
-  if (avFood.maxWeightAvailable == 0 || daily.maxDailyPortion == 0)
-    return subTree;
-
-  uint16_t portion = daily.minDailyPortion;
-  Food food(avFood.food);
-
-  if (!addNode(food, portion, avFood, daily, ideal, allowedError))
-  {
-    return subTree;
-  }
-
-  FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
-  subTree.push_back(node);
-
-  while (portion < daily.maxDailyPortion && portion < avFood.maxWeightAvailable) {
-    portion += avFood.deltaPortion;
-
-    if (!addNode(food, portion, avFood, daily, ideal, allowedError))
-    {
-      return subTree;
-    }
-
-    FoodTree::FoodNode* node = new FoodTree::FoodNode(food);
-    subTree.push_back(node);
-  }
-
-  return subTree;
-}
-
 using GIPair = std::pair<int16_t, FoodAvailable>;
 static std::multimap<int16_t, FoodAvailable> giMap = {
   GIPair(10, FoodAvailable(Food("avocado", 2, 6, 20, 212), 35, 10, FoodAvailable::Daily(300, 150))),
@@ -121,7 +61,7 @@ int main()
     auto foodAvailable = iter->second;
     std::cout << "available " << foodAvailable.maxWeightAvailable << " of " << foodAvailable.food.getName() << std::endl;
 
-    auto sub = createSubTree(foodAvailable, idealNutrition, allowedError);
+    auto sub = tree.createSubTree(foodAvailable, overheadingComparator);
     if (sub.size() > 0)
     {
       N *= sub.size();
