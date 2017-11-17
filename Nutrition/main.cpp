@@ -45,14 +45,15 @@ int main()
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
 
   const float allowedError = 0.5;
+  const float allowedOverheading = 0.2;
 
   uint64_t N = 1;
 
   FoodTree tree;
 
-  auto overheadingComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
+  auto overheadingComparator = [idealNutrition, allowedOverheading](const Nutrition& nutrition) -> bool
   {
-    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedError;
+    return NutritionError::maxOverheading(idealNutrition, nutrition) < allowedOverheading;
   };
 
   //TODO: if empty, N = 0
