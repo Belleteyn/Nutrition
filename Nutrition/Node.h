@@ -8,6 +8,8 @@ template <class T>
 class Node
 {
 public:
+  using list_t = std::list<std::shared_ptr<Node>>;
+
   Node()
     : body_(T())
     , sub_()
@@ -18,7 +20,7 @@ public:
     , sub_()
   {}
 
-  Node(const T& body, const std::list<Node*>& sub)
+  Node(const T& body, const list_t& sub)
     : body_(body)
     , sub_(sub)
   {}
@@ -28,20 +30,20 @@ public:
 
   virtual ~Node() = default;
 
-  void setSub(const std::list<Node*>& sub) { sub_ = sub; }
+  void setSub(const list_t& sub) { sub_ = sub; }
 
   const T& getBody() const { return body_; }
-  const std::list<Node*>& getSub() const { return sub_; }
+  const list_t& getSub() const { return sub_; }
 
 
-  typename std::list<Node*>::iterator eraseSub(typename std::list<Node*>::const_iterator iter)
+  typename list_t::iterator eraseSub(typename list_t::const_iterator iter)
   {
     return sub_.erase(iter, sub_.end());
   }
 
 private:
   T body_;
-  std::list<Node*> sub_;
+  list_t sub_;
 };
 
 #endif // NODE_H

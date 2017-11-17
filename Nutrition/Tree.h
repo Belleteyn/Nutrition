@@ -22,8 +22,8 @@ public:
                          , const NutritionErrorComparator& overheadingComparator);
 
 private:
-  FoodNode* root_;
-  std::list<FoodNode*> leaves_;
+  FoodNodePtr root_;
+  std::list<FoodNodePtr> leaves_;
 };
 
 #endif // TREE_H
