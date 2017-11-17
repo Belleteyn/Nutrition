@@ -12,8 +12,6 @@
 //TODO: add weights to nodes (max weight to node with preferred daily portion)
 //TODO: depth search with weights
 
-//TODO: dynamically change allowed error (based on available food)
-
 using GIPair = std::pair<int16_t, FoodAvailable>;
 static std::multimap<int16_t, FoodAvailable> giMap = {
   GIPair(10, FoodAvailable(Food("avocado", 2, 6, 20, 212), 35, 10, FoodAvailable::Daily(300, 150))),
@@ -44,8 +42,8 @@ int main()
 {
   const Nutrition idealNutrition(1300, 1300 * 0.5, 1300 * 0.3, 1300 * 0.2);
 
-  const float allowedError = 0.5;
   const float allowedOverheading = 0.2;
+  float allowedError = 1;
 
   uint64_t N = 1;
 
@@ -77,10 +75,17 @@ int main()
   Nutrition minErrorNutrition(0, 0, 0, 0);
   NutritionError minError(idealNutrition, minErrorNutrition);
 
-  auto allowedErrorComparator = [idealNutrition, allowedError](const Nutrition& nutrition) -> bool
+  auto allowedErrorComparator = [idealNutrition, &allowedError](const Nutrition& nutrition) -> bool
   {
     NutritionError error(idealNutrition, nutrition);
-    return error.error() < allowedError;
+    auto err = error.error();
+    if (err < allowedError)
+    {
+      allowedError = err;
+      return true;
+    }
+
+    return false;
   };
 
   auto rationList = tree.depthSearch(allowedErrorComparator, overheadingComparator);
