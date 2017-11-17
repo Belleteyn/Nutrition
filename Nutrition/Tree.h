@@ -1,13 +1,11 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include <Node.h>
-#include <Food.h>
+#include <FoodNode.h>
 
 class FoodTree
 {
 public:
-  using FoodNode = Node<Food>;
   using Ration = std::list<const Food*>;
   using RationList = std::list<std::list<const Food*>>;
 
