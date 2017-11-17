@@ -18,3 +18,4 @@ HEADERS += \
     Node.h \
     Tree.h \
     FoodNode.h \
+    FoodAvailable.h
