@@ -7,13 +7,13 @@ struct Nutrition
 {
   float kkal = 0;
   float proteins = 0;
-  float carbohydrates = 0;
+  float carbs = 0;
   float fats = 0;
 
   Nutrition(float kkal, float p, float c, float f)
     : kkal(kkal)
     , proteins(p)
-    , carbohydrates(c)
+    , carbs(c)
     , fats(f)
   {}
 
@@ -25,7 +25,7 @@ struct Nutrition
 
     kkal = other.kkal;
     proteins = other.proteins;
-    carbohydrates = other.carbohydrates;
+    carbs = other.carbs;
     fats = other.fats;
 
     return *this;
@@ -33,14 +33,14 @@ struct Nutrition
 
   Nutrition operator + (const Nutrition& rhs) const
   {
-    return Nutrition(kkal + rhs.kkal, proteins + rhs.proteins, carbohydrates + rhs.carbohydrates, fats + rhs.fats);
+    return Nutrition(kkal + rhs.kkal, proteins + rhs.proteins, carbs + rhs.carbs, fats + rhs.fats);
   }
 
   bool operator <= (const Nutrition& rhs) const
   {
     return (kkal <= rhs.kkal
         && proteins <= rhs.proteins
-        && carbohydrates <= rhs.carbohydrates
+        && carbs <= rhs.carbs
         && fats <= rhs.fats);
   }
 
@@ -48,7 +48,7 @@ struct Nutrition
   {
     kkal += rhs.kkal;
     proteins += rhs.proteins;
-    carbohydrates += rhs.carbohydrates;
+    carbs += rhs.carbs;
     fats += rhs.fats;
     return *this;
   }
@@ -57,7 +57,7 @@ struct Nutrition
   {
     kkal -= rhs.kkal;
     proteins -= rhs.proteins;
-    carbohydrates -= rhs.carbohydrates;
+    carbs -= rhs.carbs;
     fats -= rhs.fats;
     return *this;
   }

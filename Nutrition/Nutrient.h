@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-enum class Nutrient { Proteins, Carbohydrates, Fats };
+enum class Nutrient { Proteins, Carbs, Fats, Energy };
 static std::ostream& operator << (std::ostream& os, const Nutrient& obj)
 {
   switch (obj)
@@ -12,12 +12,16 @@ static std::ostream& operator << (std::ostream& os, const Nutrient& obj)
     os << "Proteins";
   break;
 
-  case Nutrient::Carbohydrates:
+  case Nutrient::Carbs:
     os << "Carbohydrates";
   break;
 
   case Nutrient::Fats:
     os << "Fats";
+  break;
+
+  case Nutrient::Energy:
+    os << "Kkal";
   break;
 
   default:

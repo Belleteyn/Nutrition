@@ -153,8 +153,8 @@ int main()
   std::cout << "\np: " << minErrorNutrition.proteins << "(" << idealNutrition.proteins << ")"
             << ", error = " << minError.proteinsErr;
 
-  std::cout << "\nc: " << minErrorNutrition.carbohydrates << "(" << idealNutrition.carbohydrates << ")"
-            << ", error = " << minError.carbohydratesErr;
+  std::cout << "\nc: " << minErrorNutrition.carbs << "(" << idealNutrition.carbs << ")"
+            << ", error = " << minError.carbsErr;
 
   std::cout << "\nf: " << minErrorNutrition.fats << "(" << idealNutrition.fats << ")"
             << ", error = " << minError.fatsErr << std::endl;

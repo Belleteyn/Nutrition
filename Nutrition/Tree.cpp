@@ -122,7 +122,7 @@ void FoodTree::addLeaves(const std::list<FoodNodePtr>& sub, const NutritionError
                   << " + " << (*subIter)->getBody().getName() << " (" << (*subIter)->getBody().getPortionMass() << ")" << std::endl;
 
         std::cout << "overhead: " << checkNutrition.kkal << " | " << checkNutrition.proteins << "/"
-                  << checkNutrition.carbohydrates << "/" << checkNutrition.fats << std::endl;
+                  << checkNutrition.carbs << "/" << checkNutrition.fats << std::endl;
         break;
       }
     }
