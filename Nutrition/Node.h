@@ -46,7 +46,7 @@ public:
     return sub_.erase(iter, sub_.end());
   }
 
-private:
+protected:
   T body_;
   std::list<Node> sub_;
 };

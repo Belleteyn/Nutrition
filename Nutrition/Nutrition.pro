@@ -16,4 +16,5 @@ HEADERS += \
     Nutrient.h \
     FoodContainer.h \
     Node.h \
-    Tree.h
+    Tree.h \
+    FoodNode.h
