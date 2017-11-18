@@ -1,5 +1,5 @@
-#ifndef TREE_H
-#define TREE_H
+#ifndef FOODTREE_H
+#define FOODTREE_H
 
 #include <FoodNode.h>
 #include <FoodAvailable.h>
@@ -35,4 +35,4 @@ private:
   std::list<FoodNodePtr> leaves_;
 };
 
-#endif // TREE_H
+#endif // FOODTREE_H
