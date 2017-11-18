@@ -19,12 +19,12 @@ Food::Food(const Food& other)
   , id_(std::hash<std::string>()(std::string(name_)))
   , nutrition_(other.nutrition_.kkal
                , other.nutrition_.proteins
-               , other.nutrition_.carbohydrates
+               , other.nutrition_.carbs
                , other.nutrition_.fats)
   , portionMass_(other.portionMass_)
   , portionNutrition_(other.portionNutrition_.kkal
                       , other.portionNutrition_.proteins
-                      , other.portionNutrition_.carbohydrates
+                      , other.portionNutrition_.carbs
                       , other.portionNutrition_.fats)
 {
 
@@ -36,7 +36,7 @@ void Food::setPortion(const int gram)
 
   portionNutrition_.kkal = nutrition_.kkal * 0.01 * portionMass_;
   portionNutrition_.proteins = nutrition_.proteins * 0.01 * kkalPerProteinGram * portionMass_;
-  portionNutrition_.carbohydrates = nutrition_.carbohydrates * 0.01 * kkalPerCarbohydrateGram * portionMass_;
+  portionNutrition_.carbs = nutrition_.carbs * 0.01 * kkalPerCarbohydrateGram * portionMass_;
   portionNutrition_.fats = nutrition_.fats * 0.01 * kkalPerFatGram * portionMass_;
 
   /*
@@ -46,9 +46,10 @@ void Food::setPortion(const int gram)
             << ", c " << portionCarbohydrates
             << ", f " << portionFats
             << std::endl;
-  */
+
   assert(portionNutrition_.kkal != (portionNutrition_.proteins + portionNutrition_.carbohydrates + portionNutrition_.fats)
       && "portion kkal error");
+  */
 }
 
 bool Food::operator < (const Food& rhs) const
@@ -87,11 +88,14 @@ float Food::getNutrient(const Nutrient& nutrient) const
   case Nutrient::Proteins:
     return nutrition_.proteins;
 
-  case Nutrient::Carbohydrates:
-    return nutrition_.carbohydrates;
+  case Nutrient::Carbs:
+    return nutrition_.carbs;
 
   case Nutrient::Fats:
     return nutrition_.fats;
+
+  case Nutrient::Energy:
+    return nutrition_.kkal;
 
   default:
   break;
