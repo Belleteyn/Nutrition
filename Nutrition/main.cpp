@@ -7,7 +7,7 @@
 #include <FoodAvailable.h>
 #include <NutritionError.h>
 
-#include <Tree.h>
+#include <FoodTree.h>
 
 //TODO: add weights to nodes (max weight to node with preferred daily portion)
 //TODO: depth search with weights
