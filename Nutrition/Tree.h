@@ -17,7 +17,7 @@ public:
   FoodTree();
   virtual ~FoodTree();
 
-  SubTree createSubTree(const FoodAvailable& avFood, const NutritionErrorComparator& overheadingComparator) const;
+  SubTree createSubTree(FoodAvailable& avFood, const NutritionErrorComparator& overheadingComparator) const;
 
   void addLeaves(const std::list<FoodNodePtr>& sub, const NutritionErrorComparator& overheadingComparator);
 

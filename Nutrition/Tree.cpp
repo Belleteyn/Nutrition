@@ -67,7 +67,7 @@ FoodTree::FoodTree()
 FoodTree::~FoodTree()
 {}
 
-SubTree FoodTree::createSubTree(const FoodAvailable& avFood, const FoodTree::NutritionErrorComparator& overheadingComparator) const
+SubTree FoodTree::createSubTree(FoodAvailable& avFood, const FoodTree::NutritionErrorComparator& overheadingComparator) const
 {
   SubTree subTree;
   const auto& daily = avFood.daily;
@@ -77,6 +77,20 @@ SubTree FoodTree::createSubTree(const FoodAvailable& avFood, const FoodTree::Nut
 
   uint16_t portion = daily.minDailyPortion;
   Food food(avFood.food);
+
+  if (!avFood.fixedDelta)
+  {
+    if (daily.preferredDailyPortion > 0) {
+      avFood.deltaPortion = daily.preferredDailyPortion;
+    }
+    else {
+      static const float OptimumKkalConst = 100.0f * 85 ; //as in curd
+      avFood.deltaPortion = OptimumKkalConst / food.getNutrient(Nutrient::Energy);
+    }
+
+    std::cout << " ~ set " << food.getName() << " delta = " << avFood.deltaPortion << "\n";
+  }
+
 
   setPortion(food, portion, daily.maxDailyPortion, avFood.maxWeightAvailable);
   auto node = createNode(food, overheadingComparator);
