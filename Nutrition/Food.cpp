@@ -94,6 +94,9 @@ float Food::getNutrient(const Nutrient& nutrient) const
   case Nutrient::Fats:
     return nutrition_.fats;
 
+  case Nutrient::Energy:
+    return nutrition_.kkal;
+
   default:
   break;
   }
