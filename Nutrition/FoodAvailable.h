@@ -22,6 +22,7 @@ struct FoodAvailable
 
   uint16_t maxWeightAvailable = 0;
   uint16_t deltaPortion = 10;
+  bool fixedDelta = false;
   Daily daily;
 
   FoodAvailable(const Food& food, uint16_t maxWeight = 0, uint16_t delta = 0, const Daily& daily = Daily())
@@ -29,7 +30,9 @@ struct FoodAvailable
     , maxWeightAvailable(maxWeight)
     , deltaPortion(delta)
     , daily(daily)
-  {}
+  {
+    fixedDelta = (delta > 0);
+  }
 };
 
 #endif // FOODAVAILABLE_H
